@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[18]:
+# In[69]:
 
 
 import plotly.express as px
@@ -10,16 +10,13 @@ import numpy as np
 import plotly.io as pio
 import plotly.graph_objects as go
 import streamlit as st
+from datetime import datetime, time 
 
 
 # ## 1. Cargar Data
 
-# In[2]:
-
-
-# Definir ruta del Archivo
-#ruta_archivo = r'dataset\VISOR_AYUDAS_DX_V4-CONDICIONES.xlsm'
-
+# # Definir ruta del Archivo
+# ruta_archivo = r'dataset\VISOR_AYUDAS_DX_V4-CONDICIONES.xlsm'
 
 # # Cargar tanto CITAS como DISP_EQUIPO
 # df_original_citas = pd.read_excel(ruta_archivo, 
@@ -34,7 +31,7 @@ import streamlit as st
 
 # ### 2.1 Pre-procesamiento de datos de citas
 
-# In[20]:
+# In[143]:
 
 
 def preprocesamiento_datos_citas(df_original_citas):
@@ -72,7 +69,7 @@ def preprocesamiento_datos_citas(df_original_citas):
 
 # ### 2.2. Pre-procesamiento de datos de disponibilidad
 
-# In[22]:
+# In[145]:
 
 
 def preprocesamiento_datos_disponibilidad(df_original_equipos):
@@ -99,56 +96,52 @@ def preprocesamiento_datos_disponibilidad(df_original_equipos):
 
 
 # df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
-# #df_equipos
+# df_equipos
 
 # ### 2.3. Completar df_equipos con programacion semanal
 
 # mes_año = '08-2024'
 
-# In[45]:
+# In[148]:
 
 
 def construir_programacion_completa(mes_año, df, df_equipos):
     # Filtrar por mes-año a revisar
-    df_prueba = df[(df['MES_AÑO'] == mes_año)]
+    df_prueba = df[df['MES_AÑO'] == mes_año]
 
     # Extraer Fechas unicas en el mes seleccionado
     unique_dates = df_prueba['FECHA'].unique()
     new_rows = []
 
-    # Iterar por cada fecha unica
+    # Iterar por cada fecha única
     for date in unique_dates:
-        # Ensure date is a datetime object
-        if not isinstance(date, pd.Timestamp):
-            continue  # Skip if not a valid datetime
-            
-        # Iterate through rows of df_equipos    
         for idx, row in df_equipos.iterrows():
-            # Ensure 'HORA INICIO' and 'HORA FIN' are valid times
-            if not pd.isna(row['HORA INICIO']) and not pd.isna(row['HORA FIN']):
-                try:
-                    # Construct datetime objects
-                    start_datetime = pd.Timestamp.combine(date.date(), row['HORA INICIO'])
-                    end_datetime = pd.Timestamp.combine(date.date(), row['HORA FIN'])
+            # Parse 'HORA INICIO' and 'HORA FIN' to datetime.time objects
+            try:
+                start_time = datetime.strptime(row['HORA INICIO'], '%H:%M:%S').time()
+                end_time = datetime.strptime(row['HORA FIN'], '%H:%M:%S').time()
+            except ValueError:
+                continue  # Skip rows with invalid time formats
             
-                    # Chequear si el dia coincide
-                    if row['DIA'] == start_datetime.dayofweek:
-                        # Crear nueva fila con hora de inicio y fin
-                        new_row = {
-                            'EQUIPO': row['EQUIPO'],
-                            'DIA': row['DIA'],
-                            'HORA INICIO': row['HORA INICIO'],
-                            'HORA FIN': row['HORA FIN'],
-                            'DOC_DISPONIBLE': row['DOC_DISPONIBLE'],
-                            'TIPO PACIENTE': row['TIPO PACIENTE'],
-                            'Start': start_datetime,
-                            'Finish': end_datetime
-                        }
-                        new_rows.append(new_row)
-                except ValueError:
-                    continue  # Skip if there's a ValueError (e.g., invalid time format)             
-
-    # Crear Data Frame con nuevas filas
+            start_datetime = pd.Timestamp.combine(date.date(), start_time)
+            end_datetime = pd.Timestamp.combine(date.date(), end_time)
+            
+            # Chequear si el día coincide
+            if row['DIA'] == start_datetime.dayofweek:
+                # Crear nueva fila con hora de inicio y fin
+                new_row = {
+                    'EQUIPO': row['EQUIPO'],
+                    'DIA': row['DIA'],
+                    'HORA INICIO': row['HORA INICIO'],
+                    'HORA FIN': row['HORA FIN'],
+                    'DOC_DISPONIBLE': row['DOC_DISPONIBLE'],
+                    'TIPO PACIENTE': row['TIPO PACIENTE'],
+                    'Start': start_datetime,
+                    'Finish': end_datetime
+                }
+                new_rows.append(new_row)
+    
+    # Crear DataFrame con nuevas filas
     new_df_equipos = pd.DataFrame(new_rows)
     
     # Concatenar las nuevas filas con el df original de equipos
@@ -158,7 +151,7 @@ def construir_programacion_completa(mes_año, df, df_equipos):
     df_equipos = df_equipos[df_equipos['Start'].dt.year != 1900]
     
     # Mostrar df_equipos actualizado
-    df_equipos = df_equipos.dropna(subset='Start')
+    df_equipos = df_equipos.dropna(subset=['Start'])
     
     # Renombrar columnas para estandarizar con df citas
     df_equipos = df_equipos.rename(columns={'EQUIPO': 'RECURSO', 'DIA': 'DIA_SEM'})
@@ -167,11 +160,11 @@ def construir_programacion_completa(mes_año, df, df_equipos):
 
 
 # df_equipos, df_prueba = construir_programacion_completa(mes_año, df, df_equipos)
-# #df_equipos
+# df_equipos
 
 # ### 2.4 Pre-procesamiento de datos final
 
-# In[30]:
+# In[150]:
 
 
 def preprocesamiento_datos_final(df_equipos, df_prueba):
@@ -219,11 +212,11 @@ def preprocesamiento_datos_final(df_equipos, df_prueba):
 
 
 # df_completa = preprocesamiento_datos_final(df_equipos, df_prueba)
-# #df_completa
+# df_completa
 
 # ## 3. Codigo Streamlit para publicacion
 
-# In[17]:
+# In[153]:
 
 
 # Streamlit application
@@ -352,4 +345,10 @@ if archivo_cargado is not None:
     st.plotly_chart(fig)
 else:
     st.write("Por favor cargue el archivo de Programacion y Disponibilidad de Equipos")
+
+
+# In[ ]:
+
+
+
 
