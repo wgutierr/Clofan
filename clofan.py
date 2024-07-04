@@ -105,11 +105,10 @@ def preprocesamiento_datos_disponibilidad(df_original_equipos):
 
 # mes_año = '08-2024'
 
-# In[32]:
+# In[45]:
 
 
 def construir_programacion_completa(mes_año, df, df_equipos):
-
     # Filtrar por mes-año a revisar
     df_prueba = df[(df['MES_AÑO'] == mes_año)]
 
@@ -119,52 +118,51 @@ def construir_programacion_completa(mes_año, df, df_equipos):
 
     # Iterar por cada fecha unica
     for date in unique_dates:
+        # Ensure date is a datetime object
+        if not isinstance(date, pd.Timestamp):
+            continue  # Skip if not a valid datetime
+            
+        # Iterate through rows of df_equipos    
         for idx, row in df_equipos.iterrows():
-            # Format date parts separately
-            date_part = date.date().strftime('%Y-%m-%d')
-            start_time_part = row['HORA INICIO']
-            end_time_part = row['HORA FIN']
-
-            # Construct datetime strings
-            start_datetime_str = f"{date_part} {start_time_part}"
-            end_datetime_str = f"{date_part} {end_time_part}"
-
-            # Convert datetime strings to Pandas datetime objects
-            start_datetime = pd.to_datetime(start_datetime_str, format='%Y-%m-%d %H:%M')
-            end_datetime = pd.to_datetime(end_datetime_str, format='%Y-%m-%d %H:%M')
+            # Ensure 'HORA INICIO' and 'HORA FIN' are valid times
+            if not pd.isna(row['HORA INICIO']) and not pd.isna(row['HORA FIN']):
+                try:
+                    # Construct datetime objects
+                    start_datetime = pd.Timestamp.combine(date.date(), row['HORA INICIO'])
+                    end_datetime = pd.Timestamp.combine(date.date(), row['HORA FIN'])
             
-            #start_datetime = pd.to_datetime(f"{date.date().strftime('%Y-%m-%d')} {row['HORA INICIO']}", format='%Y-%m-%d %H:%M')
-            #end_datetime = pd.to_datetime(f"{date.date().strftime('%Y-%m-%d')} {row['HORA FIN']}", format='%Y-%m-%d %H:%M')
-            
-            # Chequear si el dia coincide
-            if row['DIA'] == start_datetime.dayofweek:
-                # Crear nueva fila con hora de inicio y fin
-                new_row = {
-                    'EQUIPO': row['EQUIPO'],
-                    'DIA': row['DIA'],
-                    'HORA INICIO': row['HORA INICIO'],
-                    'HORA FIN': row['HORA FIN'],
-                    'DOC_DISPONIBLE': row['DOC_DISPONIBLE'],
-                    'TIPO PACIENTE': row['TIPO PACIENTE'],
-                    'Start': start_datetime,
-                    'Finish': end_datetime
-                }
-                new_rows.append(new_row)
+                    # Chequear si el dia coincide
+                    if row['DIA'] == start_datetime.dayofweek:
+                        # Crear nueva fila con hora de inicio y fin
+                        new_row = {
+                            'EQUIPO': row['EQUIPO'],
+                            'DIA': row['DIA'],
+                            'HORA INICIO': row['HORA INICIO'],
+                            'HORA FIN': row['HORA FIN'],
+                            'DOC_DISPONIBLE': row['DOC_DISPONIBLE'],
+                            'TIPO PACIENTE': row['TIPO PACIENTE'],
+                            'Start': start_datetime,
+                            'Finish': end_datetime
+                        }
+                        new_rows.append(new_row)
+                except ValueError:
+                    continue  # Skip if there's a ValueError (e.g., invalid time format)             
+
     # Crear Data Frame con nuevas filas
     new_df_equipos = pd.DataFrame(new_rows)
     
     # Concatenar las nuevas filas con el df original de equipos
     df_equipos = pd.concat([df_equipos, new_df_equipos], ignore_index=True)
-
+    
     # Eliminar fechas creadas con año 1900
     df_equipos = df_equipos[df_equipos['Start'].dt.year != 1900]
     
     # Mostrar df_equipos actualizado
-    df_equipos = df_equipos.dropna(subset = 'Start')
-
+    df_equipos = df_equipos.dropna(subset='Start')
+    
     # Renombrar columnas para estandarizar con df citas
-    df_equipos = df_equipos.rename(columns = {'EQUIPO':'RECURSO', 'DIA':'DIA_SEM'})
-
+    df_equipos = df_equipos.rename(columns={'EQUIPO': 'RECURSO', 'DIA': 'DIA_SEM'})
+    
     return df_equipos, df_prueba
 
 
