@@ -105,7 +105,7 @@ def preprocesamiento_datos_disponibilidad(df_original_equipos):
 
 # mes_año = '08-2024'
 
-# In[31]:
+# In[32]:
 
 
 def construir_programacion_completa(mes_año, df, df_equipos):
@@ -120,8 +120,21 @@ def construir_programacion_completa(mes_año, df, df_equipos):
     # Iterar por cada fecha unica
     for date in unique_dates:
         for idx, row in df_equipos.iterrows():
-            start_datetime = pd.to_datetime(f"{date.date().strftime('%Y-%m-%d')} {row['HORA INICIO']}", format='%Y-%m-%d %H:%M')
-            end_datetime = pd.to_datetime(f"{date.date().strftime('%Y-%m-%d')} {row['HORA FIN']}", format='%Y-%m-%d %H:%M')
+            # Format date parts separately
+            date_part = date.date().strftime('%Y-%m-%d')
+            start_time_part = row['HORA INICIO']
+            end_time_part = row['HORA FIN']
+
+            # Construct datetime strings
+            start_datetime_str = f"{date_part} {start_time_part}"
+            end_datetime_str = f"{date_part} {end_time_part}"
+
+            # Convert datetime strings to Pandas datetime objects
+            start_datetime = pd.to_datetime(start_datetime_str, format='%Y-%m-%d %H:%M')
+            end_datetime = pd.to_datetime(end_datetime_str, format='%Y-%m-%d %H:%M')
+            
+            #start_datetime = pd.to_datetime(f"{date.date().strftime('%Y-%m-%d')} {row['HORA INICIO']}", format='%Y-%m-%d %H:%M')
+            #end_datetime = pd.to_datetime(f"{date.date().strftime('%Y-%m-%d')} {row['HORA FIN']}", format='%Y-%m-%d %H:%M')
             
             # Chequear si el dia coincide
             if row['DIA'] == start_datetime.dayofweek:
