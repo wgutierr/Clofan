@@ -102,7 +102,7 @@ def preprocesamiento_datos_disponibilidad(df_original_equipos):
 
 # mes_año = '08-2024'
 
-# In[148]:
+# In[154]:
 
 
 def construir_programacion_completa(mes_año, df, df_equipos):
@@ -116,17 +116,13 @@ def construir_programacion_completa(mes_año, df, df_equipos):
     # Iterar por cada fecha única
     for date in unique_dates:
         for idx, row in df_equipos.iterrows():
-            # Parse 'HORA INICIO' and 'HORA FIN' to datetime.time objects
-            try:
-                start_time = datetime.strptime(row['HORA INICIO'], '%H:%M:%S').time()
-                end_time = datetime.strptime(row['HORA FIN'], '%H:%M:%S').time()
-            except ValueError:
-                continue  # Skip rows with invalid time formats
+            start_time = datetime.strptime(row['HORA INICIO'], '%H:%M').time()
+            end_time = datetime.strptime(row['HORA FIN'], '%H:%M').time()
             
-            start_datetime = pd.Timestamp.combine(date.date(), start_time)
-            end_datetime = pd.Timestamp.combine(date.date(), end_time)
+            start_datetime = pd.Timestamp(date) + pd.Timedelta(hours=start_time.hour, minutes=start_time.minute)
+            end_datetime = pd.Timestamp(date) + pd.Timedelta(hours=end_time.hour, minutes=end_time.minute)
             
-            # Chequear si el día coincide
+            # Chequear si el dia coincide
             if row['DIA'] == start_datetime.dayofweek:
                 # Crear nueva fila con hora de inicio y fin
                 new_row = {
@@ -141,9 +137,9 @@ def construir_programacion_completa(mes_año, df, df_equipos):
                 }
                 new_rows.append(new_row)
     
-    # Crear DataFrame con nuevas filas
+    # Crear Data Frame con nuevas filas
     new_df_equipos = pd.DataFrame(new_rows)
-    
+        
     # Concatenar las nuevas filas con el df original de equipos
     df_equipos = pd.concat([df_equipos, new_df_equipos], ignore_index=True)
     
