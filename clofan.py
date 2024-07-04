@@ -18,21 +18,17 @@ import streamlit as st
 
 
 # Definir ruta del Archivo
-ruta_archivo = r'dataset\VISOR_AYUDAS_DX_V4-CONDICIONES.xlsm'
+#ruta_archivo = r'dataset\VISOR_AYUDAS_DX_V4-CONDICIONES.xlsm'
 
 
-# In[19]:
-
-
-# Cargar tanto CITAS como DISP_EQUIPO
-df_original_citas = pd.read_excel(ruta_archivo, 
-                            sheet_name='CITAS', 
-                            usecols='A:H')
-
-df_original_equipos = pd.read_excel(ruta_archivo, 
-                            sheet_name='DISP_EQUIPO', 
-                            usecols='A:F')
-
+# # Cargar tanto CITAS como DISP_EQUIPO
+# df_original_citas = pd.read_excel(ruta_archivo, 
+#                             sheet_name='CITAS', 
+#                             usecols='A:H')
+# 
+# df_original_equipos = pd.read_excel(ruta_archivo, 
+#                             sheet_name='DISP_EQUIPO', 
+#                             usecols='A:F')
 
 # ## 2. Pre-procesamiento de datos
 
@@ -71,12 +67,8 @@ def preprocesamiento_datos_citas(df_original_citas):
 
 
 
-# In[21]:
-
-
-df = preprocesamiento_datos_citas(df_original_citas)
-#df
-
+# df = preprocesamiento_datos_citas(df_original_citas)
+# #df
 
 # ### 2.2. Pre-procesamiento de datos de disponibilidad
 
@@ -106,22 +98,14 @@ def preprocesamiento_datos_disponibilidad(df_original_equipos):
     return df_equipos
 
 
-# In[23]:
-
-
-df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
-#df_equipos
-
+# df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
+# #df_equipos
 
 # ### 2.3. Completar df_equipos con programacion semanal
 
-# In[26]:
+# mes_año = '08-2024'
 
-
-mes_año = '08-2024'
-
-
-# In[27]:
+# In[ ]:
 
 
 def construir_programacion_completa(mes_año, df, df_equipos):
@@ -171,12 +155,8 @@ def construir_programacion_completa(mes_año, df, df_equipos):
     return df_equipos, df_prueba
 
 
-# In[28]:
-
-
-df_equipos, df_prueba = construir_programacion_completa(mes_año, df, df_equipos)
-#df_equipos
-
+# df_equipos, df_prueba = construir_programacion_completa(mes_año, df, df_equipos)
+# #df_equipos
 
 # ### 2.4 Pre-procesamiento de datos final
 
@@ -227,12 +207,8 @@ def preprocesamiento_datos_final(df_equipos, df_prueba):
     return df_completa
 
 
-# In[12]:
-
-
-df_completa = preprocesamiento_datos_final(df_equipos, df_prueba)
-#df_completa
-
+# df_completa = preprocesamiento_datos_final(df_equipos, df_prueba)
+# #df_completa
 
 # ## 3. Codigo Streamlit para publicacion
 
@@ -257,9 +233,11 @@ if archivo_cargado is not None:
     
     df = preprocesamiento_datos_citas(df_original_citas)
     df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
+    
     # Unique 'MES_ANO' values for dropdown
     mes_año_unicos = df['MES_AÑO'].unique()
-     #Dropdown widget to select 'MES_ANO'
+    
+    #Dropdown widget to select 'MES_ANO'
     mes_año = st.selectbox('Seleccionar Mes-Año', mes_año_unicos)
 
     
