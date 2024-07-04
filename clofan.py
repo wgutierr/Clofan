@@ -116,8 +116,8 @@ def construir_programacion_completa(mes_año, df, df_equipos):
     # Iterar por cada fecha única
     for date in unique_dates:
         for idx, row in df_equipos.iterrows():
-            start_time = datetime.strptime(row['HORA INICIO'], '%H:%M').time()
-            end_time = datetime.strptime(row['HORA FIN'], '%H:%M').time()
+            start_time = datetime.strptime(row['HORA INICIO'], '%H:%M:%S').time()
+            end_time = datetime.strptime(row['HORA FIN'], '%H:%M:%S').time()
             
             start_datetime = pd.Timestamp(date) + pd.Timedelta(hours=start_time.hour, minutes=start_time.minute)
             end_datetime = pd.Timestamp(date) + pd.Timedelta(hours=end_time.hour, minutes=end_time.minute)
