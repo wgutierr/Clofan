@@ -322,7 +322,7 @@ if archivo_cargado is not None:
         legend=dict(
             orientation="h",  # Horizontal orientation
             yanchor="top",    # Anchor legend to the top of the plot
-            y=1.1,            # Position the legend slightly above the plot
+            y=3.1,            # Position the legend slightly above the plot
             xanchor="right",  # Anchor legend to the right of the plot
             x=1               # Position the legend to the right
         ),
