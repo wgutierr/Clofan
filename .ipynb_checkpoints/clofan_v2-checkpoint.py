@@ -303,7 +303,7 @@ def apply_styles_to_df(df):
         column_name = df.columns[df.apply(lambda col: col == val).idxmax()]
         return apply_conditional_styles(val, column_name)
     
-    return df.style.applymap(style_func)
+    return df.style.map(style_func)
 
 
 # def aplicar_formato(df_schedule):
