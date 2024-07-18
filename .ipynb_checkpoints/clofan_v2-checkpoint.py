@@ -391,11 +391,11 @@ if archivo_cargado is not None:
     df_schedule = creacion_horario(st.session_state.df_completa, st.session_state.selected_resources)
     #styled_df = aplicar_formato(df_schedule)
     #styled_df = apply_styles_to_df(df_schedule)
-    styled_df = df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA'])
+#    styled_df = df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA'])
 
     # Display in Streamlit
     st.write('Agenda para:', fecha_especifica)
-    st.dataframe(styled_df, hide_index=True, height=600)
+    st.dataframe(df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA']), hide_index=True, height=600)
     #st.write(styled_html, unsafe_allow_html=True)
    
 else:
