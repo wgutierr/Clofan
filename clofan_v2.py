@@ -4,7 +4,6 @@
 # In[344]:
 
 
-import plotly.express as px
 import pandas as pd
 import numpy as np
 
@@ -14,25 +13,27 @@ from datetime import datetime, time, date
 
 # ## 1. Cargar Data
 
-# In[147]:
+# # Definir ruta del Archivo
+# ruta_archivo = r'dataset\VISOR_AYUDAS_DX_V4-CONDICIONES.xlsm'
 
-
-# Definir ruta del Archivo
-ruta_archivo = r'dataset\VISOR_AYUDAS_DX_V4-CONDICIONES.xlsm'
-
-
-# In[148]:
+# In[359]:
 
 
 # Cargar tanto CITAS como DISP_EQUIPO
-df_original_citas = pd.read_excel(ruta_archivo, 
-                            sheet_name='CITAS', 
-                            usecols='A:H')
+def cargar_datos(ruta, nombre_hoja, columnas):
+    df = pd.read_excel(ruta, 
+            sheet_name= nombre_hoja, 
+            usecols= columnas)
+    return df
 
-df_original_equipos = pd.read_excel(ruta_archivo, 
-                            sheet_name='DISP_EQUIPO', 
-                            usecols='A:F')
 
+# df = cargar_datos(ruta_archivo, 
+#                     nombre_hoja='CITAS', 
+#                         columnas='A:H')
+# 
+# df_original_equipos = cargar_datos(ruta_archivo, 
+#                                     nombre_hoja='DISP_EQUIPO', 
+#                                     columnas='A:F')
 
 # ## 2. Pre-procesamiento de datos
 
@@ -329,13 +330,15 @@ archivo_cargado = st.file_uploader("Cargar archivo Excel", type=['xlsx', 'xls', 
 
 if archivo_cargado is not None:
     # Read the uploaded Excel file
-    df_original_citas = pd.read_excel(archivo_cargado, 
-                            sheet_name='CITAS', 
-                            usecols='A:H')
+        
+    df_original_citas = cargar_datos(archivo_cargado, 
+                                     nombre_hoja='CITAS', 
+                                     columnas='A:H')
 
-    df_original_equipos = pd.read_excel(archivo_cargado, 
-                            sheet_name='DISP_EQUIPO', 
-                            usecols='A:F')
+    df_original_equipos = cargar_datos(archivo_cargado, 
+                                     nombre_hoja='DISP_EQUIPO', 
+                                     columnas='A:F')
+    
     df = preprocesamiento_datos_citas(df_original_citas)
     df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
     
