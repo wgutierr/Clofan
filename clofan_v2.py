@@ -381,7 +381,7 @@ if archivo_cargado is not None:
     df_schedule = creacion_horario(st.session_state.df_completa, st.session_state.selected_resources)
     #styled_df = aplicar_formato(df_schedule)
     styled_df = apply_styles_to_df(df_schedule)
-    styled_html = styled_df.to_html(escape=False)
+    
 
     # Display in Streamlit
     st.write('Agenda para:', fecha_especifica)
