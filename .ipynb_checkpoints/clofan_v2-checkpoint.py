@@ -336,7 +336,17 @@ def apply_styles_to_df(df):
 # styled_df
 
 # In[363]:
-
+def formato_colores(celda):
+    if 'Disponible' in str(celda):
+        return 'background-color: lightgray; color: black'
+    elif 'CITA AGENDADA' in str(celda):
+        return 'background-color: black; color: white'
+    elif celda == 0:
+        return 'background-color: white; color: white'
+    else:
+        return 'background-color: lightblue; color: black'
+def color_columna_hora(col):
+       return ['background-color: gray; color: white']*len(col)
 
 st.title("Programación de Citas Clofan")
 
@@ -380,8 +390,8 @@ if archivo_cargado is not None:
     # Filter the DataFrame based on selected resources
     df_schedule = creacion_horario(st.session_state.df_completa, st.session_state.selected_resources)
     #styled_df = aplicar_formato(df_schedule)
-    styled_df = apply_styles_to_df(df_schedule)
-    
+    #styled_df = apply_styles_to_df(df_schedule)
+    styled_df = df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA'])
 
     # Display in Streamlit
     st.write('Agenda para:', fecha_especifica)
