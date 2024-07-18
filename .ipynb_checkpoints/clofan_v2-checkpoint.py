@@ -398,7 +398,8 @@ if archivo_cargado is not None:
     st.dataframe(st.session_state.df_schedule.style.map(formato_colores), hide_index=True)
     #st.dataframe(st.session_state.df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA']), hide_index=True, height=600)
     #st.write(styled_html, unsafe_allow_html=True)
-   
+    st.dataframe(df_schedule.style.applymap(lambda x: "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else "")
+      
 else:
     st.write("Por favor cargue el archivo de Programacion y Disponibilidad de Equipos")
 
