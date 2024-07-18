@@ -288,27 +288,40 @@ def style_hora_column(val):
     return "background-color: gray; color: white"
 
 
-# In[351]:
+# In[362]:
 
 
-def aplicar_formato(df_schedule):
-    # Apply the styles using Styler
-    columns_to_style = df_schedule.columns.difference(['HORA'])
-    styled_df = df_schedule.style.map(apply_styles, subset= columns_to_style)
-    #styled_df = df_schedule.style.map(apply_styles, subset=pd.IndexSlice[:, df_schedule.columns.difference(['HORA'])])
-    styled_df = styled_df.map(style_hora_column, subset=['HORA'])
+def apply_conditional_styles(val, column_name):
+    if column_name != 'HORA':
+        if 'Disponible' in val:
+            return 'background-color: lightgray; color: black;'
+        elif 'CITA AGENDADA' in val:
+            return 'background-color: black; color: white;'
+    return ''  # Default style
+def apply_styles_to_df(df):
+    def style_func(val):
+        column_name = df.columns[df.apply(lambda col: col == val).idxmax()]
+        return apply_conditional_styles(val, column_name)
     
-    # Style the header and hide the index
-    styled_df = styled_df.set_table_styles(
-        [
-            {'selector': 'th', 'props': [('background-color', 'gray'), ('color', 'white'), ('text-align', 'center')]},
-            {'selector': 'td', 'props': [('text-align', 'center')]}  # Add this line to center text in cells
-        ]
-    ).hide(axis="index")
-    
-    # Display the styled DataFrame
-    return styled_df
+    return df.style.applymap(style_func)
 
+
+# def aplicar_formato(df_schedule):
+#     # Apply the styles using Styler
+#     columns_to_style = df_schedule.columns.difference(['HORA'])
+#     styled_df = df_schedule.style.map(apply_styles, subset= columns_to_style)
+#     styled_df = styled_df.map(style_hora_column, subset=['HORA'])
+#     
+#     # Style the header and hide the index
+#     styled_df = styled_df.set_table_styles(
+#         [
+#             {'selector': 'th', 'props': [('background-color', 'gray'), ('color', 'white'), ('text-align', 'center')]},
+#             {'selector': 'td', 'props': [('text-align', 'center')]}  # Add this line to center text in cells
+#         ]
+#     ).hide(axis="index")
+#     
+#     # Display the styled DataFrame
+#     return styled_df
 
 # df = preprocesamiento_datos_citas(df_original_citas)
 # df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
@@ -322,7 +335,7 @@ def aplicar_formato(df_schedule):
 # styled_df = aplicar_formato(df_schedule)
 # styled_df
 
-# In[ ]:
+# In[363]:
 
 
 st.title("Programación de Citas Clofan")
@@ -366,8 +379,8 @@ if archivo_cargado is not None:
 
     # Filter the DataFrame based on selected resources
     df_schedule = creacion_horario(st.session_state.df_completa, st.session_state.selected_resources)
-    styled_df = aplicar_formato(df_schedule)
-
+    #styled_df = aplicar_formato(df_schedule)
+    styled_df = apply_styles_to_df(df_schedule)
     styled_html = styled_df.to_html(escape=False)
 
     # Display in Streamlit
