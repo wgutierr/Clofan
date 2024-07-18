@@ -395,7 +395,8 @@ if archivo_cargado is not None:
     st.session_state.df_schedule = df_schedule
     # Display in Streamlit
     st.write('Agenda para:', fecha_especifica)
-    st.dataframe(st.session_state.df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA']), hide_index=True, height=600)
+    st.dataframe(st.session_state.df_schedule)
+    #st.dataframe(st.session_state.df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA']), hide_index=True, height=600)
     #st.write(styled_html, unsafe_allow_html=True)
    
 else:
