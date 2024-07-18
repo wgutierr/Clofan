@@ -293,7 +293,9 @@ def style_hora_column(val):
 
 def aplicar_formato(df_schedule):
     # Apply the styles using Styler
-    styled_df = df_schedule.style.map(apply_styles, subset=pd.IndexSlice[:, df_schedule.columns.difference(['HORA'])])
+    columns_to_style = df_schedule.columns.difference(['HORA'])
+    styled_df = df_schedule.style.map(apply_styles, subset= columns_to_style)
+    #styled_df = df_schedule.style.map(apply_styles, subset=pd.IndexSlice[:, df_schedule.columns.difference(['HORA'])])
     styled_df = styled_df.map(style_hora_column, subset=['HORA'])
     
     # Style the header and hide the index
