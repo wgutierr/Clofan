@@ -339,14 +339,14 @@ def apply_styles_to_df(df):
 def formato_colores(celda):
     if 'Disponible' in str(celda):
         return 'background-color: lightgray; color: black'
-    elif 'CITA AGENDADA' in str(celda):
-        return 'background-color: black; color: white'
-    elif celda == 0:
-        return 'background-color: white; color: white'
+    #elif 'CITA AGENDADA' in str(celda):
+    #    return 'background-color: black; color: white'
+    #elif celda == 0:
+    #    return 'background-color: white; color: white'
     else:
         return 'background-color: lightblue; color: black'
-def color_columna_hora(col):
-       return ['background-color: gray; color: white']*len(col)
+#def color_columna_hora(col):
+#       return ['background-color: gray; color: white']*len(col)
 
 st.title("Programación de Citas Clofan")
 
@@ -395,7 +395,7 @@ if archivo_cargado is not None:
     st.session_state.df_schedule = df_schedule
     # Display in Streamlit
     st.write('Agenda para:', fecha_especifica)
-    st.dataframe(st.session_state.df_schedule, hide_index=True)
+    st.dataframe(st.session_state.df_schedule.style.map(formato_colores), hide_index=True)
     #st.dataframe(st.session_state.df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA']), hide_index=True, height=600)
     #st.write(styled_html, unsafe_allow_html=True)
    
