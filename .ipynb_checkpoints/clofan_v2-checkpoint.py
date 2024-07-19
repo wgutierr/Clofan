@@ -406,7 +406,8 @@ if archivo_cargado is not None:
     style_func = lambda x: (
         "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else
         "background-color: lightgray; color: black" if isinstance(x, str) and x.startswith("Disponible") else
-        ""
+        "background-color: white; color: white" if isinstance(x, str) and x == 0 else
+        "background-color: lightblue; color: black"
     )
     
     # Apply the formatting to the DataFrame
