@@ -16,7 +16,7 @@ from datetime import datetime, time, date
 # # Definir ruta del Archivo
 # ruta_archivo = r'dataset\VISOR_AYUDAS_DX_V4-CONDICIONES.xlsm'
 
-# In[359]:
+# In[368]:
 
 
 # Cargar tanto CITAS como DISP_EQUIPO
@@ -27,7 +27,7 @@ def cargar_datos(ruta, nombre_hoja, columnas):
     return df
 
 
-# df = cargar_datos(ruta_archivo, 
+# df_original_citas = cargar_datos(ruta_archivo, 
 #                     nombre_hoja='CITAS', 
 #                         columnas='A:H')
 # 
@@ -39,7 +39,7 @@ def cargar_datos(ruta, nombre_hoja, columnas):
 
 # ### 2.1 Pre-procesamiento de datos de citas
 
-# In[161]:
+# In[370]:
 
 
 def preprocesamiento_datos_citas(df_original_citas):
@@ -72,15 +72,9 @@ def preprocesamiento_datos_citas(df_original_citas):
 
 
 
-# In[348]:
-
-
-#df = preprocesamiento_datos_citas(df_original_citas)
-
-
 # ### 2.2. Pre-procesamiento de datos de disponibilidad
 
-# In[163]:
+# In[372]:
 
 
 def preprocesamiento_datos_disponibilidad(df_original_equipos):
@@ -106,21 +100,11 @@ def preprocesamiento_datos_disponibilidad(df_original_equipos):
     return df_equipos
 
 
-# In[349]:
-
-
-#df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
-
-
 # ### 2.3. Completar df_equipos con programacion semanal
 
-# In[211]:
+# fecha_especifica = pd.to_datetime('2024-08-09')#.date()
 
-
-#fecha_especifica = pd.to_datetime('2024-08-09')#.date()
-
-
-# In[213]:
+# In[375]:
 
 
 def construir_programacion_completa(fecha_especifica, df, df_equipos):
@@ -173,15 +157,9 @@ def construir_programacion_completa(fecha_especifica, df, df_equipos):
     return df_equipos, df_prueba
 
 
-# In[214]:
-
-
-#df_equipos, df_prueba = construir_programacion_completa(fecha_especifica, df, df_equipos)
-
-
 # ### 2.4 Pre-procesamiento de datos final
 
-# In[216]:
+# In[377]:
 
 
 def preprocesamiento_datos_final(df_equipos, df_prueba):
@@ -228,7 +206,7 @@ def preprocesamiento_datos_final(df_equipos, df_prueba):
     return df_completa
 
 
-# In[242]:
+# In[378]:
 
 
 def creacion_horario(df_completa, selected_resouces):
@@ -270,41 +248,34 @@ def creacion_horario(df_completa, selected_resouces):
     return df_schedule
 
 
-# In[350]:
+# # Define a function to apply styles
+# def apply_styles(val):
+#     if isinstance(val, str) and val.startswith("Disponible"):
+#         return "background-color: lightgray; color: black"
+#     elif isinstance(val, str) and val.startswith("CITA AGENDADA"):
+#         return "background-color: black; color: white"
+#     elif val == 0 or val == "0":
+#         return "background-color: white; color: white"
+#     else:
+#         return "background-color: lightblue; color: black"
+# 
+# def style_hora_column(val):
+#     return "background-color: gray; color: white"
+# 
 
-
-# Define a function to apply styles
-def apply_styles(val):
-    if isinstance(val, str) and val.startswith("Disponible"):
-        return "background-color: lightgray; color: black"
-    elif isinstance(val, str) and val.startswith("CITA AGENDADA"):
-        return "background-color: black; color: white"
-    elif val == 0 or val == "0":
-        return "background-color: white; color: white"
-    else:
-        return "background-color: lightblue; color: black"
-
-def style_hora_column(val):
-    return "background-color: gray; color: white"
-
-
-# In[362]:
-
-
-def apply_conditional_styles(val, column_name):
-    if column_name != 'HORA':
-        if 'Disponible' in val:
-            return 'background-color: lightgray; color: black;'
-        elif 'CITA AGENDADA' in val:
-            return 'background-color: black; color: white;'
-    return ''  # Default style
-def apply_styles_to_df(df):
-    def style_func(val):
-        column_name = df.columns[df.apply(lambda col: col == val).idxmax()]
-        return apply_conditional_styles(val, column_name)
-    
-    return df.style.map(style_func)
-
+# def apply_conditional_styles(val, column_name):
+#     if column_name != 'HORA':
+#         if 'Disponible' in val:
+#             return 'background-color: lightgray; color: black;'
+#         elif 'CITA AGENDADA' in val:
+#             return 'background-color: black; color: white;'
+#     return ''  # Default style
+# def apply_styles_to_df(df):
+#     def style_func(val):
+#         column_name = df.columns[df.apply(lambda col: col == val).idxmax()]
+#         return apply_conditional_styles(val, column_name)
+#     
+#     return df.style.applymap(style_func)
 
 # def aplicar_formato(df_schedule):
 #     # Apply the styles using Styler
@@ -323,6 +294,22 @@ def apply_styles_to_df(df):
 #     # Display the styled DataFrame
 #     return styled_df
 
+# df_original_citas = cargar_datos(ruta_archivo, 
+#                     nombre_hoja='CITAS', 
+#                         columnas='A:H')
+# df_original_equipos = cargar_datos(ruta_archivo, 
+#                                     nombre_hoja='DISP_EQUIPO', 
+#                                     columnas='A:F')
+# df = preprocesamiento_datos_citas(df_original_citas)
+# df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
+# 
+# fecha_especifica = pd.to_datetime('2024-08-09')#.date()
+# df_equipos, df_prueba = construir_programacion_completa(fecha_especifica, df, df_equipos)
+# df_completa = preprocesamiento_datos_final(df_equipos, df_prueba)
+# selected_resouces = ['PAQUIMETRO', 'ECOGRAFO', 'OCT SOLIX']
+# df_schedule = creacion_horario(df_completa, selected_resouces)
+# df_schedule
+
 # df = preprocesamiento_datos_citas(df_original_citas)
 # df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
 # 
@@ -336,17 +323,7 @@ def apply_styles_to_df(df):
 # styled_df
 
 # In[363]:
-def formato_colores(celda):
-    if 'Disponible' in str(celda):
-        return 'background-color: lightgray; color: black'
-    #elif 'CITA AGENDADA' in str(celda):
-    #    return 'background-color: black; color: white'
-    #elif celda == 0:
-    #    return 'background-color: white; color: white'
-    else:
-        return 'background-color: lightblue; color: black'
-#def color_columna_hora(col):
-#       return ['background-color: gray; color: white']*len(col)
+
 
 st.title("Programación de Citas Clofan")
 
@@ -389,19 +366,12 @@ if archivo_cargado is not None:
 
     # Filter the DataFrame based on selected resources
     df_schedule = creacion_horario(st.session_state.df_completa, st.session_state.selected_resources)
-    #styled_df = aplicar_formato(df_schedule)
-    #styled_df = apply_styles_to_df(df_schedule)
-#    styled_df = df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA'])
+
     st.session_state.df_schedule = df_schedule
     # Display in Streamlit
     st.write('Agenda para:', fecha_especifica)
-    #st.dataframe(st.session_state.df_schedule.style.map(formato_colores), hide_index=True)
-    #st.dataframe(st.session_state.df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA']), hide_index=True, height=600)
-    #st.write(styled_html, unsafe_allow_html=True)
-    #df_styled = df_schedule.style.applymap(lambda x: "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else "background-color: lightgray; color: balck" if isinstance(x, str) and x.startswith("disponible") else "")
-    #st.dataframe(df_styled, hide_index=True, height=600)
 
-    
+   
     # Define the lambda function with multiple conditions
     style_func = lambda x: (
         "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else
@@ -413,15 +383,6 @@ if archivo_cargado is not None:
     # Apply the formatting to the DataFrame
     df_styled = df_schedule.style.applymap(style_func)
     df_styled = df_schedule.style.applymap(style_func).apply(lambda s: ['background-color: gray; color: white'] * len(s), subset=['HORA'])
-# Add table styles for headers
-    #df_styled = df_styled.set_table_styles([
-      #  {'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
-        #])
-    # Add table styles for headers
-    #df_styled = df_styled.set_table_styles([
-    #{'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
-    #])
-
 
     # Display the styled DataFrame in Streamlit
     st.dataframe(df_styled, hide_index=True, height=600)
