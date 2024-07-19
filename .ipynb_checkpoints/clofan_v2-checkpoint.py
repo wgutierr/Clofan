@@ -415,7 +415,7 @@ if archivo_cargado is not None:
     
     # Apply the formatting to the DataFrame
     df_styled = df_schedule.style.applymap(style_func)
-      
+    st.dataframe(df_styled, hide_index=True, height=600) 
 else:
     st.write("Por favor cargue el archivo de Programacion y Disponibilidad de Equipos")
 
