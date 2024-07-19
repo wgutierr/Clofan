@@ -416,7 +416,7 @@ if archivo_cargado is not None:
 # Add table styles for headers
     #df_styled = df_styled.set_table_styles([
       #  {'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
-        ])
+        #])
     # Add table styles for headers
     #df_styled = df_styled.set_table_styles([
     #{'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
