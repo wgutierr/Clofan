@@ -412,7 +412,11 @@ if archivo_cargado is not None:
     
     # Apply the formatting to the DataFrame
     #df_styled = df_schedule.style.applymap(style_func)
-    df_styled = df_schedule.style.applymap(style_func).apply(lambda s: ['background-color: gray; color: black'] * len(s), subset=['HORA'])
+    df_styled = df_schedule.style.applymap(style_func).apply(lambda s: ['background-color: gray; color: white'] * len(s), subset=['HORA'])
+# Add table styles for headers
+    df_styled = df_styled.set_table_styles([
+        {'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
+        ])
     st.dataframe(df_styled, hide_index=True, height=600) 
 else:
     st.write("Por favor cargue el archivo de Programacion y Disponibilidad de Equipos")
