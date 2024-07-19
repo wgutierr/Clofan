@@ -417,6 +417,10 @@ if archivo_cargado is not None:
     df_styled = df_styled.set_table_styles([
         {'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
         ])
+    # Add table styles for headers
+    df_styled = df_styled.set_table_styles([
+    {'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
+    ])
     st.dataframe(df_styled, hide_index=True, height=600) 
 else:
     st.write("Por favor cargue el archivo de Programacion y Disponibilidad de Equipos")
