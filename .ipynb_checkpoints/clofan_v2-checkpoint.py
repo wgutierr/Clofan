@@ -400,11 +400,7 @@ if archivo_cargado is not None:
     #st.write(styled_html, unsafe_allow_html=True)
     #df_styled = df_schedule.style.applymap(lambda x: "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else "background-color: lightgray; color: balck" if isinstance(x, str) and x.startswith("disponible") else "")
     #st.dataframe(df_styled, hide_index=True, height=600)
-    data = {
-        'A': ['Disponible', 'CITA AGENDADA', 0, 'Other'],
-        'B': ['Other', 'Disponible', 'CITA AGENDADA', 5]
-    }
-    df_schedule = pd.DataFrame(data)
+
     
     # Define the lambda function with multiple conditions
     style_func = lambda x: (
