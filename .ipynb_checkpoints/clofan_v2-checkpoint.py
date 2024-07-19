@@ -398,8 +398,23 @@ if archivo_cargado is not None:
     #st.dataframe(st.session_state.df_schedule.style.map(formato_colores), hide_index=True)
     #st.dataframe(st.session_state.df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA']), hide_index=True, height=600)
     #st.write(styled_html, unsafe_allow_html=True)
-    df_styled = df_schedule.style.applymap(lambda x: "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else "background-color: lightgray; color: balck" if isinstance(x, str) and x.startswith("disponible") else "")
-    st.dataframe(df_styled, hide_index=True, height=600)
+    #df_styled = df_schedule.style.applymap(lambda x: "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else "background-color: lightgray; color: balck" if isinstance(x, str) and x.startswith("disponible") else "")
+    #st.dataframe(df_styled, hide_index=True, height=600)
+    data = {
+        'A': ['Disponible', 'CITA AGENDADA', 0, 'Other'],
+        'B': ['Other', 'Disponible', 'CITA AGENDADA', 5]
+    }
+    df_schedule = pd.DataFrame(data)
+    
+    # Define the lambda function with multiple conditions
+    style_func = lambda x: (
+        "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else
+        "background-color: lightgray; color: black" if isinstance(x, str) and x.startswith("Disponible") else
+        ""
+    )
+    
+    # Apply the formatting to the DataFrame
+    df_styled = df_schedule.style.applymap(style_func)
       
 else:
     st.write("Por favor cargue el archivo de Programacion y Disponibilidad de Equipos")
