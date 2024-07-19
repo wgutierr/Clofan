@@ -398,7 +398,7 @@ if archivo_cargado is not None:
     #st.dataframe(st.session_state.df_schedule.style.map(formato_colores), hide_index=True)
     #st.dataframe(st.session_state.df_schedule.style.map(formato_colores).apply(color_columna_hora, subset=['HORA']), hide_index=True, height=600)
     #st.write(styled_html, unsafe_allow_html=True)
-    df_styled = df_schedule.style.applymap(lambda x: "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else "")
+    df_styled = df_schedule.style.applymap(lambda x: "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else "background-color: lightgray; color: balck" if isinstance(x, str) and x.startswith("disponible") else "")
     st.dataframe(df_styled, hide_index=True, height=600)
       
 else:
