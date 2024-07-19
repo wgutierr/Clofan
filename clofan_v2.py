@@ -403,6 +403,25 @@ if archivo_cargado is not None:
 
     
     # Define the lambda function with multiple conditions
+    #style_func = lambda x: (
+    #    "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else
+    #    "background-color: lightgray; color: black" if isinstance(x, str) and x.startswith("Disponible") else
+     #   "background-color: white; color: white" if x == 0 else
+     #   "background-color: lightblue; color: black"
+   # )
+    
+    # Apply the formatting to the DataFrame
+    #df_styled = df_schedule.style.applymap(style_func)
+   # df_styled = df_schedule.style.applymap(style_func).apply(lambda s: ['background-color: gray; color: white'] * len(s), subset=['HORA'])
+# Add table styles for headers
+    #df_styled = df_styled.set_table_styles([
+      #  {'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
+        ])
+    # Add table styles for headers
+    #df_styled = df_styled.set_table_styles([
+    #{'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
+    #])
+
     style_func = lambda x: (
         "background-color: black; color: white" if isinstance(x, str) and x.startswith("CITA AGENDADA") else
         "background-color: lightgray; color: black" if isinstance(x, str) and x.startswith("Disponible") else
@@ -411,17 +430,16 @@ if archivo_cargado is not None:
     )
     
     # Apply the formatting to the DataFrame
-    #df_styled = df_schedule.style.applymap(style_func)
-    df_styled = df_schedule.style.applymap(style_func).apply(lambda s: ['background-color: gray; color: white'] * len(s), subset=['HORA'])
-# Add table styles for headers
-    df_styled = df_styled.set_table_styles([
-        {'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
-        ])
-    # Add table styles for headers
-    df_styled = df_styled.set_table_styles([
-    {'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold')]}
-    ])
-    st.dataframe(df_styled, hide_index=True, height=600) 
+    df_styled = df_schedule.style.applymap(style_func) \
+        .apply(lambda s: ['background-color: gray; color: white'] * len(s), subset=['HORA']) \
+        .set_table_styles([
+            {'selector': 'thead th', 'props': [('background-color', 'gray'), ('color', 'white'), ('font-weight', 'bold'), ('text-align', 'center')]}
+        ]) \
+        .set_properties(**{'text-align': 'center'})
+    
+    # Display the styled DataFrame in Streamlit
+    st.dataframe(df_styled, hide_index=True, height=600)
+    #st.dataframe(df_styled, hide_index=True, height=600) 
 else:
     st.write("Por favor cargue el archivo de Programacion y Disponibilidad de Equipos")
 
