@@ -13,8 +13,12 @@ from datetime import datetime, time, date
 
 # ## 1. Cargar Data
 
-# # Definir ruta del Archivo
-# ruta_archivo = r'dataset\VISOR_AYUDAS_DX_V4-CONDICIONES.xlsm'
+# In[ ]:
+
+
+# Definir ruta del Archivo
+#ruta_archivo = r'dataset\VISOR_AYUDAS_DX_V4-CONDICIONES.xlsm'
+
 
 # In[368]:
 
@@ -27,13 +31,17 @@ def cargar_datos(ruta, nombre_hoja, columnas):
     return df
 
 
+# In[402]:
+
+
 # df_original_citas = cargar_datos(ruta_archivo, 
 #                     nombre_hoja='CITAS', 
 #                         columnas='A:H')
-# 
+
 # df_original_equipos = cargar_datos(ruta_archivo, 
 #                                     nombre_hoja='DISP_EQUIPO', 
 #                                     columnas='A:F')
+
 
 # ## 2. Pre-procesamiento de datos
 
@@ -102,7 +110,11 @@ def preprocesamiento_datos_disponibilidad(df_original_equipos):
 
 # ### 2.3. Completar df_equipos con programacion semanal
 
-# fecha_especifica = pd.to_datetime('2024-08-09')#.date()
+# In[403]:
+
+
+#fecha_especifica = pd.to_datetime('2024-08-09')#.date()
+
 
 # In[375]:
 
@@ -206,6 +218,8 @@ def preprocesamiento_datos_final(df_equipos, df_prueba):
     return df_completa
 
 
+# ## 3. Creacion Horario Unificado
+
 # In[378]:
 
 
@@ -248,81 +262,9 @@ def creacion_horario(df_completa, selected_resouces):
     return df_schedule
 
 
-# # Define a function to apply styles
-# def apply_styles(val):
-#     if isinstance(val, str) and val.startswith("Disponible"):
-#         return "background-color: lightgray; color: black"
-#     elif isinstance(val, str) and val.startswith("CITA AGENDADA"):
-#         return "background-color: black; color: white"
-#     elif val == 0 or val == "0":
-#         return "background-color: white; color: white"
-#     else:
-#         return "background-color: lightblue; color: black"
-# 
-# def style_hora_column(val):
-#     return "background-color: gray; color: white"
-# 
+# ## 4. App Streamlit
 
-# def apply_conditional_styles(val, column_name):
-#     if column_name != 'HORA':
-#         if 'Disponible' in val:
-#             return 'background-color: lightgray; color: black;'
-#         elif 'CITA AGENDADA' in val:
-#             return 'background-color: black; color: white;'
-#     return ''  # Default style
-# def apply_styles_to_df(df):
-#     def style_func(val):
-#         column_name = df.columns[df.apply(lambda col: col == val).idxmax()]
-#         return apply_conditional_styles(val, column_name)
-#     
-#     return df.style.applymap(style_func)
-
-# def aplicar_formato(df_schedule):
-#     # Apply the styles using Styler
-#     columns_to_style = df_schedule.columns.difference(['HORA'])
-#     styled_df = df_schedule.style.map(apply_styles, subset= columns_to_style)
-#     styled_df = styled_df.map(style_hora_column, subset=['HORA'])
-#     
-#     # Style the header and hide the index
-#     styled_df = styled_df.set_table_styles(
-#         [
-#             {'selector': 'th', 'props': [('background-color', 'gray'), ('color', 'white'), ('text-align', 'center')]},
-#             {'selector': 'td', 'props': [('text-align', 'center')]}  # Add this line to center text in cells
-#         ]
-#     ).hide(axis="index")
-#     
-#     # Display the styled DataFrame
-#     return styled_df
-
-# df_original_citas = cargar_datos(ruta_archivo, 
-#                     nombre_hoja='CITAS', 
-#                         columnas='A:H')
-# df_original_equipos = cargar_datos(ruta_archivo, 
-#                                     nombre_hoja='DISP_EQUIPO', 
-#                                     columnas='A:F')
-# df = preprocesamiento_datos_citas(df_original_citas)
-# df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
-# 
-# fecha_especifica = pd.to_datetime('2024-08-09')#.date()
-# df_equipos, df_prueba = construir_programacion_completa(fecha_especifica, df, df_equipos)
-# df_completa = preprocesamiento_datos_final(df_equipos, df_prueba)
-# selected_resouces = ['PAQUIMETRO', 'ECOGRAFO', 'OCT SOLIX']
-# df_schedule = creacion_horario(df_completa, selected_resouces)
-# df_schedule
-
-# df = preprocesamiento_datos_citas(df_original_citas)
-# df_equipos = preprocesamiento_datos_disponibilidad(df_original_equipos)
-# 
-# fecha_especifica = pd.to_datetime('2024-08-10')
-# df_equipos, df_prueba = construir_programacion_completa(fecha_especifica, df, df_equipos)
-# df_completa = preprocesamiento_datos_final(df_equipos, df_prueba)
-# 
-# selected_resouces = ['OCT CIRRUS', 'ECOGRAFO', 'PAQUIMETRO', 'OCT SOLIX']
-# df_schedule = creacion_horario(df_completa, selected_resouces)
-# styled_df = aplicar_formato(df_schedule)
-# styled_df
-
-# In[363]:
+# In[404]:
 
 
 st.title("Programación de Citas Clofan")
@@ -389,10 +331,4 @@ if archivo_cargado is not None:
 
 else:
     st.write("Por favor cargue el archivo de Programacion y Disponibilidad de Equipos")
-
-
-# In[ ]:
-
-
-
 
